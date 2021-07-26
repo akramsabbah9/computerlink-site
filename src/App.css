@@ -1,12 +1,16 @@
-.site-root {
+#root {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-html, body, #root, .site-root {
+html, body, #root {
     width: 100%;
     height: 100%;
     padding: 0;
     margin: 0;
+}
+
+.main-content {
+    overflow-y: scroll;
 }

@@ -1,21 +1,21 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Home } from "./pages";
+import { Home, Servers } from "./pages";
 import { Header } from "./components";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 function App() {
     return (
-        <div className="site-root">
+        <Router>
             <Header />
-            <div>
-                <Router>
-                    <Switch>
-                        <Route path="/" component={Home} />
-                    </Switch>
-                </Router>
+            <div className="main-content">
+                <Switch>
+                    <Route path="/servers" component={Servers} />
+                    <Route path="/" component={Home} />
+                </Switch>
             </div>
-        </div>
+        </Router>
     );
 }
 

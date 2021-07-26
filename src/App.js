@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Home, Servers } from "./pages";
-import { Header } from "./components";
+import { Header, Footer } from "./components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -14,6 +14,7 @@ function App() {
                     <Route path="/servers" component={Servers} />
                     <Route path="/" component={Home} />
                 </Switch>
+                <Footer />
             </div>
         </Router>
     );

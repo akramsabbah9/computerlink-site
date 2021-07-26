@@ -1,5 +1,7 @@
 import Home from "./Home";
+import Servers from "./Servers";
 
 export {
-    Home
+    Home,
+    Servers
 };

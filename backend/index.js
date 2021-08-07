@@ -1,7 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const db = require("./config/connection");
+// const db = require("./config/connection");
 
 const sess = {
     secret: "Change this later",
@@ -22,4 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 // app.use(session(sess));
 
+app.get("/", (req, res) => res.json({message: "Hello World!"}));
 
+app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}.`);
+});

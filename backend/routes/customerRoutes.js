@@ -32,4 +32,31 @@ router.post("/", async ({ body }, res) => {
     }
 });
 
+// UPDATE route
+router.put("/:id", async ({ body, params }, res) => {
+    try {
+        // for each valid key-val pair in body, make a string (ie. "email=value, ") and concatenate them all
+        let updateString = "";
+
+        for (const [key, value] of Object.entries(body)) {
+            if ( !["email","password"].includes(key) ) continue;
+            // console.log(`${key}: ${value}`);
+            updateString += `${key}='${value}', `;
+        }
+
+        const queryParams = [ params.id ];
+
+        // note: slice removes the trailing comma
+        const { rows } = await db.query(
+            `UPDATE customers SET ${updateString.slice(0, -2)} WHERE cust_id = $1;`,
+            queryParams
+        );
+        res.send(rows);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err });
+    }
+});
+
 module.exports = router;

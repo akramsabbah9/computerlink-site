@@ -3,10 +3,9 @@ const router = express.Router();
 const db = require("../db");
 
 // GET routes
-// test. delete later
 router.get("/", async (req, res) => {
-    const { rows } = await db.query("SELECT NOW()");
-    res.send(rows[0]);
+    const { rows } = await db.query("SELECT * FROM customers");
+    res.send(rows);
 });
 
 router.get("/:id", async (req, res) => {

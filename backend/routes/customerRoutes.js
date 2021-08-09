@@ -17,4 +17,19 @@ router.get("/:id", async (req, res) => {
     else res.send(rows[0]);
 });
 
+// POST route
+router.post("/", async ({ body }, res) => {
+    try {
+        const queryParams = [body.first_name, body.last_name, body.email, body.password];
+        const { rows } = await db.query(
+            "INSERT INTO customers (first_name, last_name, email, password) VALUES ($1, $2, $3, $4);",
+            queryParams
+        );
+        res.send(rows);
+    }
+    catch (err) {
+        res.status(400).json({ error: err });
+    }
+});
+
 module.exports = router;

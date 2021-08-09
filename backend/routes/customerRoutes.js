@@ -28,6 +28,7 @@ router.post("/", async ({ body }, res) => {
         res.send(rows);
     }
     catch (err) {
+        console.log(err);
         res.status(400).json({ error: err });
     }
 });
@@ -40,17 +41,26 @@ router.put("/:id", async ({ body, params }, res) => {
 
         for (const [key, value] of Object.entries(body)) {
             if ( !["email","password"].includes(key) ) continue;
-            // console.log(`${key}: ${value}`);
             updateString += `${key}='${value}', `;
         }
 
-        const queryParams = [ params.id ];
-
-        // note: slice removes the trailing comma
+        const { id } = params;
         const { rows } = await db.query(
-            `UPDATE customers SET ${updateString.slice(0, -2)} WHERE cust_id = $1;`,
-            queryParams
+            `UPDATE customers SET ${updateString.slice(0, -2)} WHERE cust_id = $1;`, [id]
         );
+        res.send(rows);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err });
+    }
+});
+
+// DELETE route
+router.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { rows } = await db.query("DELETE FROM customers WHERE cust_id = $1", [id]);
         res.send(rows);
     }
     catch (err) {

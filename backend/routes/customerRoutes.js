@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const db = require("../db");
 
 // GET routes
@@ -19,7 +20,8 @@ router.get("/:id", async (req, res) => {
 // POST route
 router.post("/", async ({ body }, res) => {
     try {
-        const queryParams = [body.first_name, body.last_name, body.email, body.password];
+        const hashedPass = await bcrypt.hash(body.password, 11);
+        const queryParams = [body.first_name, body.last_name, body.email, hashedPass];
         const { rows } = await db.query(
             "INSERT INTO customers (first_name, last_name, email, password) VALUES ($1, $2, $3, $4);",
             queryParams
@@ -37,6 +39,9 @@ router.put("/:id", async ({ body, params }, res) => {
     try {
         // for each valid key-val pair in body, make a string (ie. "email=value, ") and concatenate them all
         let updateString = "";
+
+        // if the body contains a password, hash it
+        if (body.password) body.password = await bcrypt.hash(body.password, 11);
 
         for (const [key, value] of Object.entries(body)) {
             if ( !["email","password"].includes(key) ) continue;

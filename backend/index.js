@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
+const pgSession = require('connect-pg-simple')(session);
 const routes = require("./routes");
 
 const sessionOptions = {
@@ -13,8 +14,7 @@ const sessionOptions = {
     rolling: true,
     saveUninitialized: false,
     secret: [process.env.SESSIONSECRET],
-    // store: new require('connect-pg-simple')(session))() // connect-pg-simple once in production
-    // see https://www.npmjs.com/package/connect-pg-simple
+    store: new pgSession()
 };
 
 const PORT = process.env.PORT || 3001;

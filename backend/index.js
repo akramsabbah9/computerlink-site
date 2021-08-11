@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
-const path = require("path");
 const routes = require("./routes");
 
 const sessionOptions = {
@@ -30,8 +29,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(session(sessionOptions)); // have to initialize before router
 app.use(routes);
-app.use(session(sessionOptions));
 
 app.get("/", (req, res) => res.json({message: "Hello World!"}));
 

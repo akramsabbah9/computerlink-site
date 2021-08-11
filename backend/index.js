@@ -29,7 +29,7 @@ if (app.get("env") === "production") {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionOptions)); // have to initialize before router
-app.use(routes);
+app.use("/api", routes);
 
 app.get("/", (req, res) => res.json({message: "Hello World!"}));
 

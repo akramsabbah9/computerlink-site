@@ -48,15 +48,11 @@ router.post("/login", async (req, res) => {
         if (!validPass) throw "Password does not match";
 
         // if auth succeeds, set session variables
-        // req.session.save(() => {
         req.session.cust_id = rows[0].cust_id;
         req.session.first_name = rows[0].first_name;
         req.session.last_name = rows[0].last_name;
         req.session.email = rows[0].email;
         req.session.loggedIn = true;
-        // });
-
-        console.log(req.session)
 
         res.json({ message: "You are now logged in!" });
     }
@@ -68,7 +64,6 @@ router.post("/login", async (req, res) => {
 
 // used to log out a customer
 router.post("/logout", (req, res) => {
-    console.log(req.session)
     // destroy session if logged in, otherwise send 404
     if (req.session.loggedIn) {
         req.session.destroy(() => {
@@ -109,8 +104,12 @@ router.put("/:id", async ({ body, params }, res) => {
 // DELETE route
 router.delete("/:id", async (req, res) => {
     try {
+        // destroy session if it exists
+        if (req.session.loggedIn) req.session.destroy();
+
         const { id } = req.params;
         const { rows } = await db.query("DELETE FROM customers WHERE cust_id = $1", [id]);
+
         res.send(rows);
     }
     catch (err) {

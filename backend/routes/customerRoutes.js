@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const db = require("../db");
+const session = require("express-session");
 
 // GET routes
 router.get("/", async (req, res) => {
@@ -48,13 +49,15 @@ router.post("/login", async (req, res) => {
         if (!validPass) throw "Password does not match";
 
         // if auth succeeds, set session variables
-        req.session.cust_id = rows[0].cust_id;
-        req.session.first_name = rows[0].first_name;
-        req.session.last_name = rows[0].last_name;
-        req.session.email = rows[0].email;
-        req.session.loggedIn = true;
+        req.session.save(() => {
+            req.session.cust_id = rows[0].cust_id;
+            req.session.first_name = rows[0].first_name;
+            req.session.last_name = rows[0].last_name;
+            req.session.email = rows[0].email;
+            req.session.loggedIn = true;
 
-        res.json({ message: "You are now logged in!" });
+            res.json({ message: "You are now logged in!" });
+        });
     }
     catch (err) {
         console.log(err);

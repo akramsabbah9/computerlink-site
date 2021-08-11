@@ -6,8 +6,7 @@ const routes = require("./routes");
 const sessionOptions = {
     cookie: {
         maxAge: 24 * 60 * 1000, // 1 day
-        sameSite: true,
-        secure: "auto"
+        sameSite: true
     },
     name: "computerlink-login",
     resave: false,
@@ -21,11 +20,11 @@ const sessionOptions = {
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-// // set session cookie to be secure in production, and trust reverse proxy
-// if (app.get("env") === "development") {
-//     sessionOptions.cookie.secure = true;
-//     app.set("trust proxy", 1);
-// }
+// set session cookie to be secure in production, and trust reverse proxy
+if (app.get("env") === "production") {
+    sessionOptions.cookie.secure = true;
+    app.set("trust proxy", 1);
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

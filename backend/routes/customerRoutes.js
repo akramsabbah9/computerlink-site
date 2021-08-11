@@ -17,7 +17,8 @@ router.get("/:id", async (req, res) => {
     else res.send(rows[0]);
 });
 
-// POST route
+// POST routes
+// used to create a customer // TODO: send verification email!
 router.post("/", async ({ body }, res) => {
     try {
         const hashedPass = await bcrypt.hash(body.password, 11);
@@ -31,6 +32,35 @@ router.post("/", async ({ body }, res) => {
     catch (err) {
         console.log(err);
         res.status(400).json({ error: err });
+    }
+});
+
+// used to log in a customer
+router.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const { rows } = await db.query(`SELECT * FROM customers WHERE email = $1;`, [email]);
+
+        // throw error if authentication fails
+        if (!rows.length) throw "No user with this email exists";
+
+        let validPass = await bcrypt.compare(password, rows[0].password);
+        if (!validPass) throw "Password does not match";
+
+        // if auth succeeds, set session variables
+        req.session.save(() => {
+            req.session.cust_id = rows[0].cust_id;
+            req.session.first_name = rows[0].first_name;
+            req.session.last_name = rows[0].last_name;
+            req.session.email = rows[0].email;
+            req.session.loggedIn = true;
+        });
+
+        res.json({ message: "You are now logged in!" });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(401).json({ error: "Login failed!" });
     }
 });
 

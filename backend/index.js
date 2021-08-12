@@ -26,6 +26,13 @@ if (app.get("env") === "production") {
     app.set("trust proxy", 1);
 }
 
+// CORS middleware
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // change in production
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session(sessionOptions)); // have to initialize before router

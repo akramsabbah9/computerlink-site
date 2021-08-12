@@ -21,6 +21,12 @@ function Header() {
                         </NavDropdown>
                         <Nav.Link as={Link}>About Us</Nav.Link>
                         <Nav.Link as={Link}>Contact Us</Nav.Link>
+                        {/* {Auth.loggedIn() ?
+                            <Nav.Link as={Link}>Logout</Nav.Link>
+                            :
+                            <Nav.Link as={Link}>Login</Nav.Link>} */}
+                        <Nav.Link as={Link}>Login</Nav.Link>
+                            
                         {/* Add search bar, cart, login/logout, and profile links */}
                         {/* Remove About or Contact? Solutions? */}
                     </Nav>

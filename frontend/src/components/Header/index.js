@@ -3,10 +3,10 @@ import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Auth from "../../utils/auth";
 
-function Header() {
+function Header(props) {
     // test Auth.getCookie()
     useEffect(() => {
-        console.log(Auth.getCookie());
+        // console.log(Auth.getCookie());
     }, []);
 
     return (
@@ -17,20 +17,24 @@ function Header() {
                     <Nav>
                         <Nav.Link as={Link} to="/">Home</Nav.Link>
                         <NavDropdown title="Servers">
-                            <NavDropdown.Item as={Link} to="/servers">TODO</NavDropdown.Item>
+                            {/* <NavDropdown.Item as={Link} to="/servers">TODO</NavDropdown.Item> */}
                         </NavDropdown>
                         <NavDropdown title="Workstations">
-                            <NavDropdown.Item as={Link}>TODO</NavDropdown.Item>
+                            {/* <NavDropdown.Item as={Link}>TODO</NavDropdown.Item> */}
                         </NavDropdown>
                         <NavDropdown title="Solutions">
-                            <NavDropdown.Item as={Link}>TODO</NavDropdown.Item>
+                            {/* <NavDropdown.Item as={Link}>TODO</NavDropdown.Item> */}
                         </NavDropdown>
-                        <Nav.Link as={Link}>About Us</Nav.Link>
-                        <Nav.Link as={Link}>Contact Us</Nav.Link>
+                        {/* <Nav.Link as={Link}>About Us</Nav.Link>
+                        <Nav.Link as={Link}>Contact Us</Nav.Link> */}
                         {/* {Auth.getCookie() ?
                             <Nav.Link as={Link}>Logout</Nav.Link>
                             :
                             <Nav.Link as={Link} to="/login">Login</Nav.Link>} */}
+                        {props.token ?
+                            <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
+                            :
+                            <Nav.Link as={Link} to="/login">Login</Nav.Link>}
                         <Nav.Link as={Link} to="/login">Login</Nav.Link>
                             
                         {/* Add search bar, cart, login/logout, and profile links */}

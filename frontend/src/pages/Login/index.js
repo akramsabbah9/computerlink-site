@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 
-function Login() {
-
+function Login({saveToken}) {
     // test fetch
     useEffect(() => {
-        async function fetchData() {
+        const fetchData = async function() {
             const response = await fetch("/api/customers/login", {
                 method: "POST",
                 body: JSON.stringify({
@@ -13,9 +12,12 @@ function Login() {
                 }),
                 headers: { "Content-Type": "application/json" }
             });
-
-            console.log(response);
-        }
+    
+            const token = await response.json();
+    
+            console.log(token);
+            saveToken(token);
+        };
         try {
             fetchData();
         }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "backend/server.js",
   "scripts": {
-    "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm start\"",
+    "start": "concurrently \"cd backend && npm run watch\" \"cd frontend && npm start\"",
     "install": "cd backend && npm i && cd ../frontend && npm i",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

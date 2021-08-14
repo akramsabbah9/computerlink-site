@@ -56,6 +56,8 @@ router.post("/login", async (req, res) => {
             req.session.email = rows[0].email;
             req.session.loggedIn = true;
 
+            // also set another cookie that frontend can read (no sensitive info)
+            res.cookie("computerlink-login", "1", { maxAge: 24 * 60 * 60 * 1000 });
             res.json({ token: "loggedIn" });
         });
     }
@@ -70,6 +72,9 @@ router.post("/logout", (req, res) => {
     // destroy session if logged in, otherwise send 404
     if (req.session.loggedIn) {
         req.session.destroy(() => {
+            // remove computerlink-login cookie
+            // res.cookie("computerlink-login", "1", { maxAge: 0 });
+            res.clearCookie("computerlink-login");
             res.status(204).end();
         });
     }

@@ -6,10 +6,10 @@ const routes = require("./routes");
 
 const sessionOptions = {
     cookie: {
-        maxAge: 24 * 60 * 1000, // 1 day
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
         sameSite: true
     },
-    name: "computerlink-login",
+    name: "computerlink-session",
     resave: false,
     rolling: true,
     saveUninitialized: false,

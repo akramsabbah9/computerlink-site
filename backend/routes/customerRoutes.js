@@ -57,7 +57,9 @@ router.post("/login", async (req, res) => {
             req.session.loggedIn = true;
 
             // also set another cookie that frontend can read (no sensitive info)
-            res.cookie("computerlink-login", "1", { maxAge: 24 * 60 * 60 * 1000 });
+            const exp = 24 * 60 * 60 * 1000;
+            const sessExpiration = JSON.stringify(new Date(Date.now() + exp));
+            res.cookie("computerlink-login", sessExpiration, { maxAge: exp });
             res.json({ token: "loggedIn" });
         });
     }

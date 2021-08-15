@@ -1,60 +1,29 @@
-// // // use session cookie to determine if logged in
-// // import Cookies from "js-cookie";
+// use session cookie to determine if logged in
+import Cookies from "js-cookie";
 
-// // class Auth {
-// //     getCookie() {
-// //         let cookie = Cookies.get();
-// //         // let cookie = Cookies.get("computerlink-login");
-// //         console.log(cookie);
+class Auth {
+    // if login cookie exists and is not expired, return true.
+    loggedIn() {
+        const cookie = Cookies.get("computerlink-login");
 
-// //         return (cookie) ? true : false;
-// //     }
-// // }
+        if (cookie) {
+            const today = new Date();
+            const exp = new Date(JSON.parse(cookie));
+            return today <= exp;
+        }
 
-// // export default new Auth();
+        return false;
+        // try {
+        //     const cookie = Cookies.get("computerlink-login");
+        //     const today = new Date();
+        //     const cookieExp = new Date(JSON.parse(cookie));
+        //     return today <= cookieExp;
+        // }
+        // catch (err) {
+        //     console.error(err);
+        //     return false;
+        // }
+    }
+}
 
-// import decode from "jwt-decode";
-
-// class AuthService {
-//     getProfile() {
-//         return decode(this.getToken());
-//     }
-
-//     loggedIn() {
-//         // Checks if there is a saved token and it's still valid
-//         const token = this.getToken();
-//         return !!token && !this.isTokenExpired(token);
-//     }
-
-//     isTokenExpired(token) {
-//         try {
-//             const decoded = decode(token);
-//             if (decoded.exp < Date.now() / 1000) {
-//                 return true;
-//             } else return false;
-//         } catch (err) {
-//             return false;
-//         }
-//     }
-
-//     getToken() {
-//         // Retrieves the user token from localStorage
-//         return localStorage.getItem("id_token");
-//     }
-
-//     login(idToken) {
-//         // Saves user token to localStorage
-//         localStorage.setItem("id_token", idToken);
-
-//         window.location.assign("/");
-//     }
-
-//     logout() {
-//         // Clear user token and profile data from localStorage
-//         localStorage.removeItem("id_token");
-//         // this will reload the page and reset the state of the application
-//         window.location.assign("/");
-//     }
-// }
-
-// export default new AuthService();
+export default new Auth();

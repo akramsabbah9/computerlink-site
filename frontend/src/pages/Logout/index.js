@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { Redirect } from "react-router-dom";
+import Auth from "../../utils/auth";
 
 function Logout({setToken}) {
     // test fetch
@@ -8,15 +10,11 @@ function Logout({setToken}) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" }
             });
-
-            if (response.ok) {
-                setToken(null);
     
             // const data = await response.json();
-    
-            // console.log("logout data:", data);
-                localStorage.removeItem("token");
-            }
+            console.log(Auth.loggedIn());
+
+            if (response.ok) return true;
         };
         try {
             fetchData();
@@ -27,7 +25,10 @@ function Logout({setToken}) {
     }, []);
 
     return (<>
-        <div>Logged Out.</div>
+        {Auth.loggedIn() ?
+            <div>Logging Out.</div>
+        :
+            <Redirect to="/" />}
     </>);
 }
 

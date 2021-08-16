@@ -1,9 +1,12 @@
 import React from "react";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Auth from "../../utils/auth";
+import { useLoginContext } from "../../utils/login-context";
 
 function Header() {
+    // get login state
+    const [state, ] = useLoginContext();
+
     return (
         <header>
             <Navbar bg="light" expand="lg">
@@ -22,7 +25,7 @@ function Header() {
                         </NavDropdown>
                         {/* <Nav.Link as={Link}>About Us</Nav.Link>
                         <Nav.Link as={Link}>Contact Us</Nav.Link> */}
-                        {Auth.loggedIn() ?
+                        {state.loggedIn ?
                             <Nav.Link as={Link} to="/logout">Logout</Nav.Link>
                             :
                             <Nav.Link as={Link} to="/login">Login</Nav.Link>}

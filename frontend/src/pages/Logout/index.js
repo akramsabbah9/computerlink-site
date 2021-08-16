@@ -1,8 +1,18 @@
 import React, { useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import Auth from "../../utils/auth";
+import { SET_LOGGED_OUT } from "../../utils/actions";
+import { useLoginContext } from "../../utils/login-context";
 
-function Logout({setToken}) {
+function Logout() {
+    // initialize login context
+    const [state, dispatch] = useLoginContext();
+
+    // dispatch login event when user is logged in
+    const logoutUser = () => {
+        dispatch({ type: SET_LOGGED_OUT });
+    };
+
     // test fetch
     useEffect(() => {
         const fetchData = async function() {
@@ -12,7 +22,10 @@ function Logout({setToken}) {
             });
     
             // const data = await response.json();
-            console.log(Auth.loggedIn());
+            console.log("logout", Auth.loggedIn());
+
+            // if login cookie no longer exists, logout user
+            if (!Auth.loggedIn()) logoutUser();
 
             if (response.ok) return true;
         };
@@ -25,7 +38,7 @@ function Logout({setToken}) {
     }, []);
 
     return (<>
-        {Auth.loggedIn() ?
+        {state.loggedIn ?
             <div>Logging Out.</div>
         :
             <Redirect to="/" />}

@@ -13,21 +13,13 @@ function Login() {
         dispatch({ type: SET_LOGGED_IN });
     };
 
-    // form state
-    const [formState, setFormState] = useState({
-        email: "",
-        password: { value: "", err: "" }
-    });
+    const [formState, setFormState] = useState({ email: "", password: "" });
+    const [formErrors, setErrors] = useState({ email: "", password: "" });
 
     // handle form field change
     const handleFormChange = event => {
-        // destructure event target
         const { name, value } = event.target;
-        // update state
-        setFormState({ 
-            ...formState, 
-            [name]: { ...[name], value }
-        });
+        setFormState({ ...formState, [name]: value });
     };
 
     // handle form submit
@@ -52,34 +44,36 @@ function Login() {
         if (response.ok && Auth.loggedIn()) loginUser();
     };
 
-    const setForm = async arg => {
-        const response = setFormState(arg);
-
-        console.log(formState);
-    }
-
     // validate form for null-input
     const validateForm = () => {
-        let isValid = true;
+        let isValid = 11; // set a digit to zero if an input is null
 
-        // check all form fields: if any are blank, set its error
-        for (const [field, entry] of Object.entries(formState)) {
-            console.log(`${field}: value ${entry.value}, err ${entry.err}`);
+        if (!formState.email) isValid -= 10;
+        if (!formState.password) isValid -= 1;
 
-            // if this field's entry has no value, set its error message
-            // BUG: Email doesn't get set unless password does first. Likely
-            // caused by race condition where email message arrives and is overwritten
-            // by password message (containing no email error)
-            if (entry.value.length === 0) {
-                setForm({
-                    ...formState,
-                    [field]: { value: "", err: `Your ${field} was left blank!` }
+        switch(isValid) {
+            case 10:
+                setErrors({
+                    email: "",
+                    password: "You must enter a password!"
                 });
-                isValid = false;
-            }
+                return false;
+            case 1:
+                setErrors({
+                    email: "You must enter an email!",
+                    password: ""
+                });
+                return false;
+            case 0:
+                setErrors({ 
+                    email: "You must enter an email!",
+                    password: "You must enter a password!"
+                });
+                return false;
+            default:
+                setErrors({ email: "", password: "" });
+                return true;
         }
-
-        return isValid;
     };
 
     return (<>
@@ -92,10 +86,10 @@ function Login() {
                 <input
                 placeholder="email@site.com"
                 name="email"
-                id="login-email"
+                id="email"
                 onChange={handleFormChange}
                 />
-                {formState.email.err}
+                {formErrors.email}
             </div>
 
             <div className="form-field">
@@ -103,10 +97,10 @@ function Login() {
                 <input
                     placeholder="*******"
                     name="password"
-                    id="login-pass"
+                    id="password"
                     onChange={handleFormChange}
                 />
-                {formState.password.err}
+                {formErrors.password}
             </div>
             <div className="">
                 <button className="" type="submit">Submit</button>

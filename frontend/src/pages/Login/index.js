@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState /*, useEffect*/ } from "react";
 import { Redirect } from "react-router-dom";
 import Auth from "../../utils/auth";
 import { SET_LOGGED_IN } from "../../utils/actions";
@@ -13,41 +13,105 @@ function Login() {
         dispatch({ type: SET_LOGGED_IN });
     };
 
-    useEffect(() => {
-        console.log("before login", Auth.loggedIn());
-        const fetchData = async function() {
-            const response = await fetch("/api/customers/login", {
-                method: "POST",
-                body: JSON.stringify({
-                    email: "test3@test.com",
-                    password: "tester"
-                }),
-                headers: { "Content-Type": "application/json" }
-            });
+    // form state
+    const [formState, setFormState] = useState({
+        email: "",
+        password: { value: "", err: "" }
+    });
 
-            // test try to read cookie
-            console.log("after login", Auth.loggedIn());
+    // handle form field change
+    const handleFormChange = event => {
+        // destructure event target
+        const { name, value } = event.target;
+        // update state
+        setFormState({ 
+            ...formState, 
+            [name]: { ...[name], value }
+        });
+    };
 
-            // if login cookie exists, dispatch login event
-            if (Auth.loggedIn()) loginUser();
+    // handle form submit
+    const handleFormSubmit = async event => {
+        event.preventDefault();
+        if (!validateForm()) return false;
 
-            // if 200, redirect user to homepage
-            // if (response.ok) window.location.assign("/");
-            if (response.ok) return true;
-        };
-        try {
-            fetchData();
+        // send fetch request to backend and await response
+        const response = await fetch("/api/customers/login", {
+            method: "POST",
+            body: JSON.stringify({
+                email: "test3@test.com", //TODO
+                password: "tester" //TODO
+            }),
+            headers: { "Content-Type": "application/json" }
+        });
+
+        // test try to read cookie
+        console.log("after login", Auth.loggedIn());
+
+        // if login cookie exists, dispatch login event
+        if (response.ok && Auth.loggedIn()) loginUser();
+    };
+
+    const setForm = async arg => {
+        const response = setFormState(arg);
+
+        console.log(formState);
+    }
+
+    // validate form for null-input
+    const validateForm = () => {
+        let isValid = true;
+
+        // check all form fields: if any are blank, set its error
+        for (const [field, entry] of Object.entries(formState)) {
+            console.log(`${field}: value ${entry.value}, err ${entry.err}`);
+
+            // if this field's entry has no value, set its error message
+            // BUG: Email doesn't get set unless password does first. Likely
+            // caused by race condition where email message arrives and is overwritten
+            // by password message (containing no email error)
+            if (entry.value.length === 0) {
+                setForm({
+                    ...formState,
+                    [field]: { value: "", err: `Your ${field} was left blank!` }
+                });
+                isValid = false;
+            }
         }
-        catch (err) {
-            console.log(err);
-        }
-    }, []);
+
+        return isValid;
+    };
 
     return (<>
-        {state.loggedIn ? 
-            <Redirect to="/" />
-            :
-            <div>Form here.</div>}
+        {state.loggedIn ? <Redirect to="/" /> : null}
+
+        {/* login form */}
+        <form className="" onSubmit={handleFormSubmit}>
+            <div className="form-field">
+                <label htmlFor="email">Email <span className="required-field">*</span></label>
+                <input
+                placeholder="email@site.com"
+                name="email"
+                id="login-email"
+                onChange={handleFormChange}
+                />
+                {formState.email.err}
+            </div>
+
+            <div className="form-field">
+                <label htmlFor="password">Password <span className="required-field">*</span></label>
+                <input
+                    placeholder="*******"
+                    name="password"
+                    id="login-pass"
+                    onChange={handleFormChange}
+                />
+                {formState.password.err}
+            </div>
+            <div className="">
+                <button className="" type="submit">Submit</button>
+            </div>
+        </form>
     </>);
 }
 
